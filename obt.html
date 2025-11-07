@@ -1,682 +1,504 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leadership Competition Tracker</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            background:Green;
-            border-radius: 30px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        h1 {
-            color: #000000;
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 2.5em;
-        }
-        
-        h2 {
-            color: #764ba2;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-        }
-        
-        .game-selector {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        
-        .game-btn {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-            padding: 20px;
-            border: none;
-            border-radius: 15px;
-            font-size: 1.2em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .game-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-        
-        .game-btn.completed {
-            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
-        }
-        
-        .input-section {
-            background: #f0f0f0;
-            padding: 30px;
-            border-radius: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .team-input {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            display: grid;
-            grid-template-columns: 150px 1fr 1fr 100px;
-            gap: 15px;
-            align-items: center;
-        }
-        
-        .team-label {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #667eea;
-        }
-        
-        input[type="text"],
-        input[type="number"] {
-            padding: 12px;
-            font-size: 1.1em;
-            border: 3px solid #667eea;
-            border-radius: 10px;
-            text-align: center;
-        }
-        
-        input:focus {
-            outline: none;
-            border-color: #764ba2;
-        }
-        
-        select {
-            padding: 12px;
-            font-size: 1.1em;
-            border: 3px solid #667eea;
-            border-radius: 10px;
-            background: white;
-            cursor: pointer;
-        }
-        
-        button {
-            padding: 15px 30px;
-            font-size: 1.2em;
-            font-weight: bold;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: white;
-        }
-        
-        button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-        
-        .btn-save {
-            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
-            width: 100%;
-            padding: 20px;
-            font-size: 1.4em;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .btn-secondary {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-        }
-        
-        .leaderboard {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 30px;
-            border-radius: 20px;
-            color: white;
-            margin-bottom: 20px;
-        }
-        
-        .leaderboard-item {
-            background: rgba(255,255,255,0.2);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            backdrop-filter: blur(10px);
-        }
-        
-        .rank-badge {
-            font-size: 3em;
-            font-weight: bold;
-        }
-        
-        .team-name {
-            font-size: 1.8em;
-            font-weight: bold;
-        }
-        
-        .team-score {
-            font-size: 2.5em;
-            font-weight: bold;
-        }
-        
-        .detailed-scores {
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .score-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        
-        .score-table th,
-        .score-table td {
-            padding: 12px;
-            text-align: center;
-            border: 2px solid #ddd;
-        }
-        
-        .score-table th {
-            background: #667eea;
-            color: white;
-            font-weight: bold;
-        }
-        
-        .score-table tr:nth-child(even) {
-            background: #f0f0f0;
-        }
-        
-        .score-table .team-total {
-            background: #ffd700;
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .button-group {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        
-        .game-type-badge {
-            font-size: 0.8em;
-            padding: 5px 10px;
-            border-radius: 20px;
-            background: rgba(255,255,255,0.3);
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leadership Competition Tracker — Luxe</title>
+  <!-- Premium Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* -----------------------
+       RESET + BASE
+    ------------------------*/
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+
+    :root{
+      /* Luxe dark palette */
+      --bg-start: #0b0f19;       /* near-black indigo */
+      --bg-mid:   #12172a;       /* deep navy */
+      --bg-end:   #1a2036;       /* muted blue-black */
+      --surface:  rgba(255,255,255,0.06); /* glass card */
+      --border:   rgba(255,255,255,0.12);
+      --text:     #ECECF2;       /* soft white */
+      --muted:    #ABB1C7;       /* cool gray */
+      --gold:     #E6C36A;       /* luxe accent */
+      --gold-2:   #FFDFA3;       /* lighter accent */
+      --accent:   #8AA6FF;       /* royal blue accent */
+      --shadow:   0 20px 60px rgba(0,0,0,0.45), 0 8px 24px rgba(2,6,23,0.35);
+      --radius-xl: 26px;
+      --radius-lg: 18px;
+      --radius:  14px;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(1200px 600px at 10% -10%, rgba(230,195,106,0.10), transparent 40%),
+                  radial-gradient(1000px 600px at 90% 10%, rgba(138,166,255,0.10), transparent 35%),
+                  linear-gradient(135deg, var(--bg-start), var(--bg-mid) 50%, var(--bg-end));
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .container {
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: clamp(28px, 4vw, 48px);
+      box-shadow: var(--shadow);
+      max-width: 1200px;
+      margin: 0 auto;
+      backdrop-filter: blur(14px) saturate(140%);
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      color: var(--text);
+      text-align: center;
+      margin-bottom: 6px;
+      font-size: clamp(2rem, 4.4vw, 3rem);
+      letter-spacing: .2px;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 22px;
+      font-size: clamp(1.2rem, 2.6vw, 1.8rem);
+    }
+
+    p.lead { text-align:center; color: var(--muted); margin-bottom: 18px; }
+
+    /* Game grid */
+    .game-selector { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 28px; }
+
+    .game-btn {
+      background: linear-gradient(135deg, rgba(230,195,106,0.18), rgba(138,166,255,0.18));
+      color: var(--text);
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      font-size: 1.08em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 10px 24px rgba(0,0,0,.22);
+      backdrop-filter: blur(10px);
+    }
+    .game-btn:hover { transform: translateY(-2px); border-color: rgba(230,195,106,0.6); box-shadow: 0 16px 36px rgba(0,0,0,.32); }
+    .game-btn.completed { background: linear-gradient(135deg, rgba(15, 163, 92, 0.18), rgba(230,195,106,0.2)); border-color: rgba(230,195,106,0.5); }
+
+    .game-type-badge { font-size: .8em; padding: 6px 10px; border-radius: 999px; background: rgba(255,255,255,0.12); }
+
+    /* Input panels */
+    .input-section {
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid var(--border);
+      padding: 26px;
+      border-radius: var(--radius-lg);
+      margin-bottom: 26px;
+      backdrop-filter: blur(10px);
+    }
+
+    .team-input {
+      background: rgba(12, 16, 28, 0.45);
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 14px;
+      display: grid;
+      grid-template-columns: 170px 1fr 1fr 120px;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .team-label { font-size: 1.15em; font-weight: 700; color: var(--gold-2); letter-spacing: .3px; }
+
+    input[type="text"], input[type="number"], select {
+      padding: 12px 14px;
+      font-size: 1.05em;
+      border: 1.6px solid rgba(230,195,106,0.45);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      text-align: center;
+      outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    input::placeholder { color: rgba(235,235,245,0.55); }
+    select { cursor: pointer; }
+
+    input:focus, select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 5px rgba(230,195,106,0.22);
+    }
+
+    /* Buttons */
+    button { padding: 14px 26px; font-size: 1.06em; font-weight: 700; border: none; border-radius: 12px; cursor: pointer; transition: transform .18s ease, box-shadow .25s ease, opacity .2s ease; color: #0b0f19; }
+    button:hover { transform: translateY(-1px); box-shadow: 0 12px 24px rgba(0,0,0,0.25); }
+
+    .btn-primary { background: linear-gradient(135deg, var(--gold), var(--gold-2)); color: #1a1a1a; }
+    .btn-secondary { background: linear-gradient(135deg, #6b8cff, #b3c7ff); color: #0b1020; }
+    .btn-save { background: linear-gradient(90deg, var(--gold), var(--gold-2)); width: 100%; padding: 18px; font-size: 1.2em; color: #171717; }
+
+    /* Leaderboard */
+    .leaderboard {
+      background: linear-gradient(135deg, rgba(230,195,106,0.22), rgba(138,166,255,0.18));
+      padding: 26px;
+      border-radius: var(--radius-lg);
+      color: var(--text);
+      margin-bottom: 18px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .leaderboard-item {
+      background: rgba(255,255,255,0.08);
+      padding: 18px;
+      border-radius: 14px;
+      margin-bottom: 12px;
+      display: flex; justify-content: space-between; align-items: center;
+      border: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+    }
+
+    .rank-badge { font-size: 2rem; font-weight: 800; }
+    .team-name { font-size: 1.35rem; font-weight: 700; letter-spacing: .2px; }
+    .team-score { font-size: 1.8rem; font-weight: 800; color: var(--gold-2); }
+
+    /* Detail table */
+    .detailed-scores { background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)); padding: 26px; border-radius: var(--radius-lg); margin-bottom: 18px; border: 1px solid var(--border); backdrop-filter: blur(8px); }
+    .detailed-scores h3 { font-family: 'Playfair Display', serif; color: var(--gold); margin: 0 0 10px; }
+
+    .score-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    .score-table th, .score-table td { padding: 12px; text-align: center; border: 1.5px solid rgba(255,255,255,0.1); color: var(--text); }
+    .score-table th { background: linear-gradient(90deg, rgba(230,195,106,0.25), rgba(138,166,255,0.2)); color: #0b0f19; font-weight: 800; }
+    .score-table tr:nth-child(even) { background: rgba(255,255,255,0.04); }
+    .score-table .team-total { background: linear-gradient(90deg, var(--gold), var(--gold-2)); color: #171717; font-weight: 800; font-size: 1.05em; }
+
+    .hidden { display: none; }
+
+    /* Top action row */
+    .button-group { display: flex; gap: 14px; justify-content: center; margin-top: 18px; flex-wrap: wrap; }
+
+    /* Accessibility focus ring for keyboard users */
+    :focus-visible { outline: 3px solid rgba(230,195,106,0.55); outline-offset: 2px; }
+
+    @media (max-width: 700px){
+      .team-input { grid-template-columns: 1fr; }
+      .team-label { text-align:center; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🏆 Leadership Competition Tracker</h1>
-        <h2>Track Scores & Rankings</h2>
+  <div class="container">
+    <h1>🏆 Leadership Competition Tracker</h1>
+    <h2>Elegantly Track Scores & Rankings</h2>
 
-        <!-- Game Selection Screen -->
-        <div id="screen-games">
-            <p style="text-align: center; font-size: 1.2em; color: #666; margin-bottom: 20px;">
-                Select a game to enter scores:
-            </p>
-            <div class="game-selector" id="gameButtons"></div>
-            
-            <div class="button-group">
-                <button class="btn-primary" onclick="showLeaderboard()">📊 View Leaderboard</button>
-                <button class="btn-secondary" onclick="downloadCSV()">📥 Download Results</button>
-                <button class="btn-secondary" onclick="resetAll()">🔄 Reset All</button>
-            </div>
-        </div>
+    <!-- Game Selection Screen -->
+    <div id="screen-games">
+      <p class="lead">Select a game to enter scores:</p>
+      <div class="game-selector" id="gameButtons"></div>
 
-        <!-- Score Entry Screen -->
-        <div id="screen-entry" class="hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 id="currentGameTitle" style="margin: 0;"></h2>
-                <button class="btn-secondary" onclick="backToGames()">← Back</button>
-            </div>
-            
-            <div class="input-section">
-                <div id="teamInputs"></div>
-            </div>
-            
-            <button class="btn-save" onclick="saveGameScores()">💾 Save Scores</button>
-        </div>
-
-        <!-- Leaderboard Screen -->
-        <div id="screen-leaderboard" class="hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="margin: 0;">🏆 Final Rankings</h2>
-                <button class="btn-secondary" onclick="backToGames()">← Back</button>
-            </div>
-            
-            <div class="leaderboard" id="leaderboardDisplay"></div>
-            
-            <div class="detailed-scores">
-                <h3 style="color: #667eea; margin-bottom: 15px;">📋 Detailed Score Breakdown</h3>
-                <div style="overflow-x: auto;">
-                    <table class="score-table" id="detailedTable"></table>
-                </div>
-            </div>
-        </div>
+      <div class="button-group">
+        <button class="btn-primary" onclick="showLeaderboard()">📊 View Leaderboard</button>
+        <button class="btn-secondary" onclick="downloadCSV()">📥 Download Results</button>
+        <button class="btn-secondary" onclick="resetAll()">🔄 Reset All</button>
+      </div>
     </div>
 
-    <script>
-        const games = [
-            { name: 'Flight Game', type: 'placement', icon: '✈️' },
-            { name: 'Number Game', type: 'time', icon: '🔢' },
-            { name: 'Cogless', type: 'time', icon: '⚙️' },
-            { name: 'A Game', type: 'time_foul', icon: '🎯' },
-            { name: 'Rope Game', type: 'time_foul', icon: '🪢' },
-            { name: 'Brick Game', type: 'time_foul', icon: '🧱' },
-            { name: 'Wall of Trust', type: 'time', icon: '🧗' },
-            { name: 'Gun Shoot', type: 'score', icon: '🎯' },
-            { name: 'Z Wall', type: 'time', icon: '⚡' },
-            { name: 'Tyre Game', type: 'score', icon: '🛞' },
-            { name: 'Trust Walk', type: 'score', icon: '👣' }
-        ];
+    <!-- Score Entry Screen -->
+    <div id="screen-entry" class="hidden">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; gap: 12px;">
+        <h2 id="currentGameTitle" style="margin: 0;">&nbsp;</h2>
+        <button class="btn-secondary" onclick="backToGames()">← Back</button>
+      </div>
 
-        const teams = ['Team 1', 'Team 2', 'Team 3', 'Team 4'];
-        let gameData = {};
-        let currentGame = null;
+      <div class="input-section">
+        <div id="teamInputs"></div>
+      </div>
 
-        // Initialize
-        function init() {
-            renderGameButtons();
-            loadData();
+      <button class="btn-save" onclick="saveGameScores()">💾 Save Scores</button>
+    </div>
+
+    <!-- Leaderboard Screen -->
+    <div id="screen-leaderboard" class="hidden">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; gap: 12px;">
+        <h2 style="margin: 0;">🏆 Final Rankings</h2>
+        <button class="btn-secondary" onclick="backToGames()">← Back</button>
+      </div>
+
+      <div class="leaderboard" id="leaderboardDisplay"></div>
+
+      <div class="detailed-scores">
+        <h3>📋 Detailed Score Breakdown</h3>
+        <div style="overflow-x:auto;">
+          <table class="score-table" id="detailedTable"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const games = [
+      { name: 'Flight Game', type: 'placement', icon: '✈️' },
+      { name: 'Number Game', type: 'time', icon: '🔢' },
+      { name: 'Cogless', type: 'time', icon: '⚙️' },
+      { name: 'A Game', type: 'time_foul', icon: '🎯' },
+      { name: 'Rope Game', type: 'time_foul', icon: '🪢' },
+      { name: 'Brick Game', type: 'time_foul', icon: '🧱' },
+      { name: 'Wall of Trust', type: 'time', icon: '🧗' },
+      { name: 'Gun Shoot', type: 'score', icon: '🎯' },
+      { name: 'Z Wall', type: 'time', icon: '⚡' },
+      { name: 'Tyre Game', type: 'score', icon: '🛞' },
+      { name: 'Trust Walk', type: 'score', icon: '👣' }
+    ];
+
+    const teams = ['Team 1', 'Team 2', 'Team 3', 'Team 4'];
+    let gameData = {};
+    let currentGame = null;
+
+    // Initialize
+    function init() { renderGameButtons(); loadData(); }
+
+    function renderGameButtons() {
+      const container = document.getElementById('gameButtons');
+      container.innerHTML = '';
+
+      games.forEach(game => {
+        const isCompleted = gameData[game.name] !== undefined;
+        const btn = document.createElement('button');
+        btn.className = `game-btn ${isCompleted ? 'completed' : ''}`;
+        btn.innerHTML = `
+          <span>${game.icon} ${game.name}</span>
+          <span class="game-type-badge">${isCompleted ? '✓ Done' : 'Enter'}</span>
+        `;
+        btn.onclick = () => openGame(game);
+        container.appendChild(btn);
+      });
+    }
+
+    function openGame(game) {
+      currentGame = game;
+      document.getElementById('currentGameTitle').textContent = `${game.icon} ${game.name}`;
+
+      const container = document.getElementById('teamInputs');
+      container.innerHTML = '';
+
+      teams.forEach(team => {
+        const div = document.createElement('div');
+        div.className = 'team-input';
+
+        let inputHTML = `<div class="team-label">${team}</div>`;
+
+        if (game.type === 'placement') {
+          inputHTML += `
+            <select id="${team}-placement">
+              <option value="">Select Rank</option>
+              <option value="1">1st Place (4 pts)</option>
+              <option value="2">2nd Place (3 pts)</option>
+              <option value="3">3rd Place (2 pts)</option>
+              <option value="4">4th Place (1 pt)</option>
+              <option value="0">DNF (0 pts)</option>
+            </select>
+            <div></div><div></div>
+          `;
+        } else if (game.type === 'time' || game.type === 'time_foul') {
+          inputHTML += `
+            <input type="text" id="${team}-time" placeholder="MM:SS or SS">
+            ${game.type === 'time_foul' ? `<input type="number" id="${team}-fouls" placeholder="Fouls" min="0" value="0">` : '<div></div>'}
+            <div></div>
+          `;
+        } else if (game.type === 'score') {
+          inputHTML += `
+            <input type="number" id="${team}-score" placeholder="Score" min="0">
+            <div></div><div></div>
+          `;
         }
 
-        function renderGameButtons() {
-            const container = document.getElementById('gameButtons');
-            container.innerHTML = '';
-            
-            games.forEach((game, index) => {
-                const isCompleted = gameData[game.name] !== undefined;
-                const btn = document.createElement('button');
-                btn.className = `game-btn ${isCompleted ? 'completed' : ''}`;
-                btn.innerHTML = `
-                    <span>${game.icon} ${game.name}</span>
-                    <span class="game-type-badge">${isCompleted ? '✓ Done' : 'Enter'}</span>
-                `;
-                btn.onclick = () => openGame(game);
-                container.appendChild(btn);
-            });
-        }
+        div.innerHTML = inputHTML;
+        container.appendChild(div);
+      });
 
-        function openGame(game) {
-            currentGame = game;
-            document.getElementById('currentGameTitle').textContent = `${game.icon} ${game.name}`;
-            
-            const container = document.getElementById('teamInputs');
-            container.innerHTML = '';
-            
-            teams.forEach((team, index) => {
-                const div = document.createElement('div');
-                div.className = 'team-input';
-                
-                let inputHTML = `<div class="team-label">${team}</div>`;
-                
-                if (game.type === 'placement') {
-                    inputHTML += `
-                        <select id="${team}-placement">
-                            <option value="">Select Rank</option>
-                            <option value="1">1st Place (4 pts)</option>
-                            <option value="2">2nd Place (3 pts)</option>
-                            <option value="3">3rd Place (2 pts)</option>
-                            <option value="4">4th Place (1 pt)</option>
-                            <option value="0">DNF (0 pts)</option>
-                        </select>
-                        <div></div><div></div>
-                    `;
-                } else if (game.type === 'time' || game.type === 'time_foul') {
-                    inputHTML += `
-                        <input type="text" id="${team}-time" placeholder="MM:SS or SS">
-                        ${game.type === 'time_foul' ? `<input type="number" id="${team}-fouls" placeholder="Fouls" min="0" value="0">` : '<div></div>'}
-                        <div></div>
-                    `;
-                } else if (game.type === 'score') {
-                    inputHTML += `
-                        <input type="number" id="${team}-score" placeholder="Score" min="0">
-                        <div></div><div></div>
-                    `;
-                }
-                
-                div.innerHTML = inputHTML;
-                container.appendChild(div);
-            });
-            
-            // Load existing data if available
-            if (gameData[game.name]) {
-                const data = gameData[game.name];
-                teams.forEach(team => {
-                    if (data[team]) {
-                        if (game.type === 'placement') {
-                            const select = document.getElementById(`${team}-placement`);
-                            if (select) select.value = data[team].placement || '';
-                        } else if (game.type === 'time' || game.type === 'time_foul') {
-                            const timeInput = document.getElementById(`${team}-time`);
-                            if (timeInput) timeInput.value = data[team].time || '';
-                            if (game.type === 'time_foul') {
-                                const foulInput = document.getElementById(`${team}-fouls`);
-                                if (foulInput) foulInput.value = data[team].fouls || 0;
-                            }
-                        } else if (game.type === 'score') {
-                            const scoreInput = document.getElementById(`${team}-score`);
-                            if (scoreInput) scoreInput.value = data[team].score || '';
-                        }
-                    }
-                });
+      // Load existing data if available
+      if (gameData[game.name]) {
+        const data = gameData[game.name];
+        teams.forEach(team => {
+          if (data[team]) {
+            if (game.type === 'placement') {
+              const select = document.getElementById(`${team}-placement`);
+              if (select) select.value = data[team].placement || '';
+            } else if (game.type === 'time' || game.type === 'time_foul') {
+              const timeInput = document.getElementById(`${team}-time`);
+              if (timeInput) timeInput.value = data[team].time || '';
+              if (game.type === 'time_foul') {
+                const foulInput = document.getElementById(`${team}-fouls`);
+                if (foulInput) foulInput.value = data[team].fouls || 0;
+              }
+            } else if (game.type === 'score') {
+              const scoreInput = document.getElementById(`${team}-score`);
+              if (scoreInput) scoreInput.value = data[team].score || '';
             }
-            
-            showScreen('screen-entry');
+          }
+        });
+      }
+
+      showScreen('screen-entry');
+    }
+
+    function saveGameScores() {
+      if (!currentGame) return;
+
+      const data = {};
+      teams.forEach(team => {
+        if (currentGame.type === 'placement') {
+          const placement = document.getElementById(`${team}-placement`).value;
+          if (placement !== '') data[team] = { placement: parseInt(placement) };
+        } else if (currentGame.type === 'time' || currentGame.type === 'time_foul') {
+          const time = document.getElementById(`${team}-time`).value;
+          if (time) {
+            const fouls = currentGame.type === 'time_foul' ? (parseInt(document.getElementById(`${team}-fouls`).value) || 0) : 0;
+            data[team] = { time, fouls };
+          }
+        } else if (currentGame.type === 'score') {
+          const score = document.getElementById(`${team}-score`).value;
+          if (score !== '') data[team] = { score: parseFloat(score) };
+        }
+      });
+
+      gameData[currentGame.name] = data;
+      saveData();
+      renderGameButtons();
+      backToGames();
+      alert('✅ Scores saved successfully!');
+    }
+
+    function calculatePoints() {
+      const teamScores = {}; teams.forEach(team => teamScores[team] = 0);
+
+      games.forEach(game => {
+        const data = gameData[game.name];
+        if (!data) return;
+
+        const teamResults = [];
+        teams.forEach(team => {
+          if (!data[team]) { teamResults.push({ team, value: null, points: 0 }); return; }
+
+          if (game.type === 'placement') {
+            const placement = data[team].placement; let points = 0;
+            if (placement === 1) points = 4; else if (placement === 2) points = 3; else if (placement === 3) points = 2; else if (placement === 4) points = 1;
+            teamResults.push({ team, value: placement, points });
+          } else if (game.type === 'time' || game.type === 'time_foul') {
+            const timeStr = data[team].time; const fouls = data[team].fouls || 0; const seconds = parseTime(timeStr) + (fouls * 10);
+            teamResults.push({ team, value: seconds, rawTime: timeStr, fouls });
+          } else if (game.type === 'score') {
+            const score = data[team].score; teamResults.push({ team, value: score });
+          }
+        });
+
+        // Rank
+        if (game.type === 'time' || game.type === 'time_foul') {
+          teamResults.sort((a,b)=>{ if(a.value===null) return 1; if(b.value===null) return -1; return a.value-b.value; });
+        } else if (game.type === 'score') {
+          teamResults.sort((a,b)=>{ if(a.value===null) return 1; if(b.value===null) return -1; return b.value-a.value; });
         }
 
-        function saveGameScores() {
-            if (!currentGame) return;
-            
-            const data = {};
-            let valid = true;
-            
+        if (game.type !== 'placement') {
+          const pts = [4,3,2,1];
+          teamResults.forEach((r,i)=>{ if(r.value!==null) r.points = pts[i] || 0; });
+        }
+
+        teamResults.forEach(r => { teamScores[r.team] += r.points; });
+      });
+
+      return teamScores;
+    }
+
+    function parseTime(timeStr){ if(!timeStr) return Infinity; const parts = timeStr.split(':'); if(parts.length===2){ return parseInt(parts[0])*60 + parseFloat(parts[1]); } return parseFloat(timeStr); }
+
+    function showLeaderboard() {
+      const scores = calculatePoints();
+      const rankings = teams.map(team => ({ team, score: scores[team] })).sort((a,b)=> b.score-a.score);
+
+      const medals = ['🥇','🥈','🥉','4️⃣'];
+      const html = rankings.map((item, i)=>`
+        <div class="leaderboard-item">
+          <span class="rank-badge">${medals[i]||i+1}</span>
+          <span class="team-name">${item.team}</span>
+          <span class="team-score">${item.score} pts</span>
+        </div>`).join('');
+      document.getElementById('leaderboardDisplay').innerHTML = html;
+
+      // Detailed table
+      let tableHTML = '<tr><th>Team</th>';
+      games.forEach(g => tableHTML += `<th>${g.icon}<br>${g.name}</th>`);
+      tableHTML += '<th class="team-total">TOTAL</th></tr>';
+
+      rankings.forEach(ranking => {
+        tableHTML += `<tr><td><strong>${ranking.team}</strong></td>`;
+        games.forEach(game => {
+          const data = gameData[game.name];
+          let points = 0;
+          if (data && data[ranking.team]) {
+            const teamResults = [];
             teams.forEach(team => {
-                if (currentGame.type === 'placement') {
-                    const placement = document.getElementById(`${team}-placement`).value;
-                    if (placement !== '') {
-                        data[team] = { placement: parseInt(placement) };
-                    }
-                } else if (currentGame.type === 'time' || currentGame.type === 'time_foul') {
-                    const time = document.getElementById(`${team}-time`).value;
-                    if (time) {
-                        const fouls = currentGame.type === 'time_foul' ? 
-                            (parseInt(document.getElementById(`${team}-fouls`).value) || 0) : 0;
-                        data[team] = { time, fouls };
-                    }
-                } else if (currentGame.type === 'score') {
-                    const score = document.getElementById(`${team}-score`).value;
-                    if (score !== '') {
-                        data[team] = { score: parseFloat(score) };
-                    }
-                }
+              if (!data[team]) { teamResults.push({ team, value: null, points: 0 }); return; }
+              if (game.type === 'placement') {
+                const placement = data[team].placement; let pts = 0; if (placement===1) pts=4; else if (placement===2) pts=3; else if (placement===3) pts=2; else if (placement===4) pts=1; teamResults.push({ team, value: placement, points: pts });
+              } else if (game.type === 'time' || game.type === 'time_foul') {
+                const timeStr = data[team].time; const fouls = data[team].fouls || 0; const seconds = parseTime(timeStr) + (fouls*10); teamResults.push({ team, value: seconds });
+              } else if (game.type === 'score') {
+                const score = data[team].score; teamResults.push({ team, value: score });
+              }
             });
-            
-            gameData[currentGame.name] = data;
-            saveData();
-            renderGameButtons();
-            backToGames();
-            alert('✅ Scores saved successfully!');
-        }
 
-        function calculatePoints() {
-            const teamScores = {};
-            teams.forEach(team => teamScores[team] = 0);
-            
-            games.forEach(game => {
-                const data = gameData[game.name];
-                if (!data) return;
-                
-                const teamResults = [];
-                
-                teams.forEach(team => {
-                    if (!data[team]) {
-                        teamResults.push({ team, value: null, points: 0 });
-                        return;
-                    }
-                    
-                    if (game.type === 'placement') {
-                        const placement = data[team].placement;
-                        let points = 0;
-                        if (placement === 1) points = 4;
-                        else if (placement === 2) points = 3;
-                        else if (placement === 3) points = 2;
-                        else if (placement === 4) points = 1;
-                        teamResults.push({ team, value: placement, points });
-                    } else if (game.type === 'time' || game.type === 'time_foul') {
-                        const timeStr = data[team].time;
-                        const fouls = data[team].fouls || 0;
-                        const seconds = parseTime(timeStr) + (fouls * 10);
-                        teamResults.push({ team, value: seconds, rawTime: timeStr, fouls });
-                    } else if (game.type === 'score') {
-                        const score = data[team].score;
-                        teamResults.push({ team, value: score });
-                    }
-                });
-                
-                // Rank teams and assign points
-                if (game.type === 'time' || game.type === 'time_foul') {
-                    teamResults.sort((a, b) => {
-                        if (a.value === null) return 1;
-                        if (b.value === null) return -1;
-                        return a.value - b.value;
-                    });
-                } else if (game.type === 'score') {
-                    teamResults.sort((a, b) => {
-                        if (a.value === null) return 1;
-                        if (b.value === null) return -1;
-                        return b.value - a.value;
-                    });
-                }
-                
-                if (game.type !== 'placement') {
-                    const points = [4, 3, 2, 1];
-                    teamResults.forEach((result, index) => {
-                        if (result.value !== null) {
-                            result.points = points[index] || 0;
-                        }
-                    });
-                }
-                
-                teamResults.forEach(result => {
-                    teamScores[result.team] += result.points;
-                });
-            });
-            
-            return teamScores;
-        }
-
-        function parseTime(timeStr) {
-            if (!timeStr) return Infinity;
-            const parts = timeStr.split(':');
-            if (parts.length === 2) {
-                return parseInt(parts[0]) * 60 + parseFloat(parts[1]);
+            if (game.type === 'time' || game.type === 'time_foul') {
+              teamResults.sort((a,b)=>{ if(a.value===null) return 1; if(b.value===null) return -1; return a.value-b.value; });
+            } else if (game.type === 'score') {
+              teamResults.sort((a,b)=>{ if(a.value===null) return 1; if(b.value===null) return -1; return b.value-a.value; });
             }
-            return parseFloat(timeStr);
-        }
-
-        function showLeaderboard() {
-            const scores = calculatePoints();
-            const rankings = teams.map(team => ({
-                team,
-                score: scores[team]
-            })).sort((a, b) => b.score - a.score);
-            
-            const leaderboardHTML = rankings.map((item, index) => {
-                const medals = ['🥇', '🥈', '🥉', '4️⃣'];
-                return `
-                    <div class="leaderboard-item">
-                        <span class="rank-badge">${medals[index]}</span>
-                        <span class="team-name">${item.team}</span>
-                        <span class="team-score">${item.score} pts</span>
-                    </div>
-                `;
-            }).join('');
-            
-            document.getElementById('leaderboardDisplay').innerHTML = leaderboardHTML;
-            
-            // Detailed table
-            let tableHTML = '<tr><th>Team</th>';
-            games.forEach(game => {
-                tableHTML += `<th>${game.icon}<br>${game.name}</th>`;
-            });
-            tableHTML += '<th class="team-total">TOTAL</th></tr>';
-            
-            rankings.forEach(ranking => {
-                tableHTML += `<tr><td><strong>${ranking.team}</strong></td>`;
-                games.forEach(game => {
-                    const data = gameData[game.name];
-                    let points = 0;
-                    
-                    if (data && data[ranking.team]) {
-                        // Calculate points for this game
-                        const teamResults = [];
-                        teams.forEach(team => {
-                            if (!data[team]) {
-                                teamResults.push({ team, value: null, points: 0 });
-                                return;
-                            }
-                            
-                            if (game.type === 'placement') {
-                                const placement = data[team].placement;
-                                let pts = 0;
-                                if (placement === 1) pts = 4;
-                                else if (placement === 2) pts = 3;
-                                else if (placement === 3) pts = 2;
-                                else if (placement === 4) pts = 1;
-                                teamResults.push({ team, value: placement, points: pts });
-                            } else if (game.type === 'time' || game.type === 'time_foul') {
-                                const timeStr = data[team].time;
-                                const fouls = data[team].fouls || 0;
-                                const seconds = parseTime(timeStr) + (fouls * 10);
-                                teamResults.push({ team, value: seconds });
-                            } else if (game.type === 'score') {
-                                const score = data[team].score;
-                                teamResults.push({ team, value: score });
-                            }
-                        });
-                        
-                        if (game.type === 'time' || game.type === 'time_foul') {
-                            teamResults.sort((a, b) => {
-                                if (a.value === null) return 1;
-                                if (b.value === null) return -1;
-                                return a.value - b.value;
-                            });
-                        } else if (game.type === 'score') {
-                            teamResults.sort((a, b) => {
-                                if (a.value === null) return 1;
-                                if (b.value === null) return -1;
-                                return b.value - a.value;
-                            });
-                        }
-                        
-                        if (game.type !== 'placement') {
-                            const pointsArray = [4, 3, 2, 1];
-                            teamResults.forEach((result, index) => {
-                                if (result.value !== null) {
-                                    result.points = pointsArray[index] || 0;
-                                }
-                            });
-                        }
-                        
-                        const teamResult = teamResults.find(r => r.team === ranking.team);
-                        points = teamResult ? teamResult.points : 0;
-                    }
-                    
-                    tableHTML += `<td>${points || '-'}</td>`;
-                });
-                tableHTML += `<td class="team-total">${ranking.score}</td></tr>`;
-            });
-            
-            document.getElementById('detailedTable').innerHTML = tableHTML;
-            showScreen('screen-leaderboard');
-        }
-
-        function downloadCSV() {
-            const scores = calculatePoints();
-            let csv = 'Team,';
-            games.forEach(game => csv += `${game.name},`);
-            csv += 'Total Score\n';
-            
-            teams.forEach(team => {
-                csv += `${team},`;
-                games.forEach(game => {
-                    const data = gameData[game.name];
-                    let points = 0;
-                    if (data && data[team]) {
-                        // Simplified point calculation for CSV
-                        points = '-';
-                    }
-                    csv += `${points},`;
-                });
-                csv += `${scores[team]}\n`;
-            });
-            
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'competition_results.csv';
-            a.click();
-        }
-
-        function resetAll() {
-            if (confirm('⚠️ Are you sure you want to reset ALL data? This cannot be undone!')) {
-                gameData = {};
-                saveData();
-                renderGameButtons();
-                alert('✅ All data has been reset!');
+            if (game.type !== 'placement') {
+              const arr = [4,3,2,1]; teamResults.forEach((res, i)=>{ if(res.value!==null) res.points = arr[i] || 0; });
             }
-        }
+            const teamResult = teamResults.find(x => x.team === ranking.team);
+            points = teamResult ? teamResult.points : 0;
+          }
+          tableHTML += `<td>${points || '-'}</td>`;
+        });
+        tableHTML += `<td class="team-total">${ranking.score}</td></tr>`;
+      });
 
-        function showScreen(screenId) {
-            document.querySelectorAll('[id^="screen-"]').forEach(screen => {
-                screen.classList.add('hidden');
-            });
-            document.getElementById(screenId).classList.remove('hidden');
-        }
+      document.getElementById('detailedTable').innerHTML = tableHTML;
+      showScreen('screen-leaderboard');
+    }
 
-        function backToGames() {
-            showScreen('screen-games');
-        }
+    function downloadCSV() {
+      const scores = calculatePoints();
+      let csv = 'Team,'; games.forEach(g => csv += `${g.name},`); csv += 'Total Score\n';
+      teams.forEach(team => { csv += `${team},`; games.forEach(g => { csv += `-,`; }); csv += `${scores[team]}\n`; });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'competition_results.csv'; a.click();
+    }
 
-        function saveData() {
-            try {
-                localStorage.setItem('competitionData', JSON.stringify(gameData));
-            } catch (e) {
-                console.log('Storage not available');
-            }
-        }
+    function resetAll() {
+      if (confirm('⚠️ Are you sure you want to reset ALL data? This cannot be undone!')) {
+        gameData = {}; saveData(); renderGameButtons(); alert('✅ All data has been reset!');
+      }
+    }
 
-        function loadData() {
-            try {
-                const saved = localStorage.getItem('competitionData');
-                if (saved) {
-                    gameData = JSON.parse(saved);
-                    renderGameButtons();
-                }
-            } catch (e) {
-                console.log('Could not load data');
-            }
-        }
+    function showScreen(id){ document.querySelectorAll('[id^="screen-"]').forEach(s=>s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
+    function backToGames(){ showScreen('screen-games'); }
 
-        // Initialize on load
-        init();
-    </script>
+    function saveData(){ try { localStorage.setItem('competitionData', JSON.stringify(gameData)); } catch(e) { console.log('Storage not available'); } }
+    function loadData(){ try { const saved = localStorage.getItem('competitionData'); if(saved){ gameData = JSON.parse(saved); renderGameButtons(); } } catch(e){ console.log('Could not load data'); } }
+
+    init();
+  </script>
 </body>
 </html>
