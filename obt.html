@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leadership Competition Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        h2 {
+            color: #764ba2;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .game-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .game-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .game-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .game-btn.completed {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+        }
+        
+        .input-section {
+            background: #f0f0f0;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .team-input {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: grid;
+            grid-template-columns: 150px 1fr 1fr 100px;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .team-label {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        input[type="text"],
+        input[type="number"] {
+            padding: 12px;
+            font-size: 1.1em;
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #764ba2;
+        }
+        
+        select {
+            padding: 12px;
+            font-size: 1.1em;
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+        }
+        
+        button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+        
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+            width: 100%;
+            padding: 20px;
+            font-size: 1.4em;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        .leaderboard {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 20px;
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .leaderboard-item {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .rank-badge {
+            font-size: 3em;
+            font-weight: bold;
+        }
+        
+        .team-name {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        
+        .team-score {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+        
+        .detailed-scores {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .score-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .score-table th,
+        .score-table td {
+            padding: 12px;
+            text-align: center;
+            border: 2px solid #ddd;
+        }
+        
+        .score-table th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .score-table tr:nth-child(even) {
+            background: #f0f0f0;
+        }
+        
+        .score-table .team-total {
+            background: #ffd700;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .game-type-badge {
+            font-size: 0.8em;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏆 Leadership Competition Tracker</h1>
+        <h2>Track Scores & Rankings</h2>
+
+        <!-- Game Selection Screen -->
+        <div id="screen-games">
+            <p style="text-align: center; font-size: 1.2em; color: #666; margin-bottom: 20px;">
+                Select a game to enter scores:
+            </p>
+            <div class="game-selector" id="gameButtons"></div>
+            
+            <div class="button-group">
+                <button class="btn-primary" onclick="showLeaderboard()">📊 View Leaderboard</button>
+                <button class="btn-secondary" onclick="downloadCSV()">📥 Download Results</button>
+                <button class="btn-secondary" onclick="resetAll()">🔄 Reset All</button>
+            </div>
+        </div>
+
+        <!-- Score Entry Screen -->
+        <div id="screen-entry" class="hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 id="currentGameTitle" style="margin: 0;"></h2>
+                <button class="btn-secondary" onclick="backToGames()">← Back</button>
+            </div>
+            
+            <div class="input-section">
+                <div id="teamInputs"></div>
+            </div>
+            
+            <button class="btn-save" onclick="saveGameScores()">💾 Save Scores</button>
+        </div>
+
+        <!-- Leaderboard Screen -->
+        <div id="screen-leaderboard" class="hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0;">🏆 Final Rankings</h2>
+                <button class="btn-secondary" onclick="backToGames()">← Back</button>
+            </div>
+            
+            <div class="leaderboard" id="leaderboardDisplay"></div>
+            
+            <div class="detailed-scores">
+                <h3 style="color: #667eea; margin-bottom: 15px;">📋 Detailed Score Breakdown</h3>
+                <div style="overflow-x: auto;">
+                    <table class="score-table" id="detailedTable"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const games = [
+            { name: 'Flight Game', type: 'placement', icon: '✈️' },
+            { name: 'Number Game', type: 'time', icon: '🔢' },
+            { name: 'Cogless', type: 'time', icon: '⚙️' },
+            { name: 'A Game', type: 'time_foul', icon: '🎯' },
+            { name: 'Rope Game', type: 'time_foul', icon: '🪢' },
+            { name: 'Brick Game', type: 'time_foul', icon: '🧱' },
+            { name: 'Wall of Trust', type: 'time', icon: '🧗' },
+            { name: 'Gun Shoot', type: 'score', icon: '🎯' },
+            { name: 'Z Wall', type: 'time', icon: '⚡' },
+            { name: 'Tyre Game', type: 'score', icon: '🛞' },
+            { name: 'Trust Walk', type: 'score', icon: '👣' }
+        ];
+
+        const teams = ['Team 1', 'Team 2', 'Team 3', 'Team 4'];
+        let gameData = {};
+        let currentGame = null;
+
+        // Initialize
+        function init() {
+            renderGameButtons();
+            loadData();
+        }
+
+        function renderGameButtons() {
+            const container = document.getElementById('gameButtons');
+            container.innerHTML = '';
+            
+            games.forEach((game, index) => {
+                const isCompleted = gameData[game.name] !== undefined;
+                const btn = document.createElement('button');
+                btn.className = `game-btn ${isCompleted ? 'completed' : ''}`;
+                btn.innerHTML = `
+                    <span>${game.icon} ${game.name}</span>
+                    <span class="game-type-badge">${isCompleted ? '✓ Done' : 'Enter'}</span>
+                `;
+                btn.onclick = () => openGame(game);
+                container.appendChild(btn);
+            });
+        }
+
+        function openGame(game) {
+            currentGame = game;
+            document.getElementById('currentGameTitle').textContent = `${game.icon} ${game.name}`;
+            
+            const container = document.getElementById('teamInputs');
+            container.innerHTML = '';
+            
+            teams.forEach((team, index) => {
+                const div = document.createElement('div');
+                div.className = 'team-input';
+                
+                let inputHTML = `<div class="team-label">${team}</div>`;
+                
+                if (game.type === 'placement') {
+                    inputHTML += `
+                        <select id="${team}-placement">
+                            <option value="">Select Rank</option>
+                            <option value="1">1st Place (4 pts)</option>
+                            <option value="2">2nd Place (3 pts)</option>
+                            <option value="3">3rd Place (2 pts)</option>
+                            <option value="4">4th Place (1 pt)</option>
+                            <option value="0">DNF (0 pts)</option>
+                        </select>
+                        <div></div><div></div>
+                    `;
+                } else if (game.type === 'time' || game.type === 'time_foul') {
+                    inputHTML += `
+                        <input type="text" id="${team}-time" placeholder="MM:SS or SS">
+                        ${game.type === 'time_foul' ? `<input type="number" id="${team}-fouls" placeholder="Fouls" min="0" value="0">` : '<div></div>'}
+                        <div></div>
+                    `;
+                } else if (game.type === 'score') {
+                    inputHTML += `
+                        <input type="number" id="${team}-score" placeholder="Score" min="0">
+                        <div></div><div></div>
+                    `;
+                }
+                
+                div.innerHTML = inputHTML;
+                container.appendChild(div);
+            });
+            
+            // Load existing data if available
+            if (gameData[game.name]) {
+                const data = gameData[game.name];
+                teams.forEach(team => {
+                    if (data[team]) {
+                        if (game.type === 'placement') {
+                            const select = document.getElementById(`${team}-placement`);
+                            if (select) select.value = data[team].placement || '';
+                        } else if (game.type === 'time' || game.type === 'time_foul') {
+                            const timeInput = document.getElementById(`${team}-time`);
+                            if (timeInput) timeInput.value = data[team].time || '';
+                            if (game.type === 'time_foul') {
+                                const foulInput = document.getElementById(`${team}-fouls`);
+                                if (foulInput) foulInput.value = data[team].fouls || 0;
+                            }
+                        } else if (game.type === 'score') {
+                            const scoreInput = document.getElementById(`${team}-score`);
+                            if (scoreInput) scoreInput.value = data[team].score || '';
+                        }
+                    }
+                });
+            }
+            
+            showScreen('screen-entry');
+        }
+
+        function saveGameScores() {
+            if (!currentGame) return;
+            
+            const data = {};
+            let valid = true;
+            
+            teams.forEach(team => {
+                if (currentGame.type === 'placement') {
+                    const placement = document.getElementById(`${team}-placement`).value;
+                    if (placement !== '') {
+                        data[team] = { placement: parseInt(placement) };
+                    }
+                } else if (currentGame.type === 'time' || currentGame.type === 'time_foul') {
+                    const time = document.getElementById(`${team}-time`).value;
+                    if (time) {
+                        const fouls = currentGame.type === 'time_foul' ? 
+                            (parseInt(document.getElementById(`${team}-fouls`).value) || 0) : 0;
+                        data[team] = { time, fouls };
+                    }
+                } else if (currentGame.type === 'score') {
+                    const score = document.getElementById(`${team}-score`).value;
+                    if (score !== '') {
+                        data[team] = { score: parseFloat(score) };
+                    }
+                }
+            });
+            
+            gameData[currentGame.name] = data;
+            saveData();
+            renderGameButtons();
+            backToGames();
+            alert('✅ Scores saved successfully!');
+        }
+
+        function calculatePoints() {
+            const teamScores = {};
+            teams.forEach(team => teamScores[team] = 0);
+            
+            games.forEach(game => {
+                const data = gameData[game.name];
+                if (!data) return;
+                
+                const teamResults = [];
+                
+                teams.forEach(team => {
+                    if (!data[team]) {
+                        teamResults.push({ team, value: null, points: 0 });
+                        return;
+                    }
+                    
+                    if (game.type === 'placement') {
+                        const placement = data[team].placement;
+                        let points = 0;
+                        if (placement === 1) points = 4;
+                        else if (placement === 2) points = 3;
+                        else if (placement === 3) points = 2;
+                        else if (placement === 4) points = 1;
+                        teamResults.push({ team, value: placement, points });
+                    } else if (game.type === 'time' || game.type === 'time_foul') {
+                        const timeStr = data[team].time;
+                        const fouls = data[team].fouls || 0;
+                        const seconds = parseTime(timeStr) + (fouls * 10);
+                        teamResults.push({ team, value: seconds, rawTime: timeStr, fouls });
+                    } else if (game.type === 'score') {
+                        const score = data[team].score;
+                        teamResults.push({ team, value: score });
+                    }
+                });
+                
+                // Rank teams and assign points
+                if (game.type === 'time' || game.type === 'time_foul') {
+                    teamResults.sort((a, b) => {
+                        if (a.value === null) return 1;
+                        if (b.value === null) return -1;
+                        return a.value - b.value;
+                    });
+                } else if (game.type === 'score') {
+                    teamResults.sort((a, b) => {
+                        if (a.value === null) return 1;
+                        if (b.value === null) return -1;
+                        return b.value - a.value;
+                    });
+                }
+                
+                if (game.type !== 'placement') {
+                    const points = [4, 3, 2, 1];
+                    teamResults.forEach((result, index) => {
+                        if (result.value !== null) {
+                            result.points = points[index] || 0;
+                        }
+                    });
+                }
+                
+                teamResults.forEach(result => {
+                    teamScores[result.team] += result.points;
+                });
+            });
+            
+            return teamScores;
+        }
+
+        function parseTime(timeStr) {
+            if (!timeStr) return Infinity;
+            const parts = timeStr.split(':');
+            if (parts.length === 2) {
+                return parseInt(parts[0]) * 60 + parseFloat(parts[1]);
+            }
+            return parseFloat(timeStr);
+        }
+
+        function showLeaderboard() {
+            const scores = calculatePoints();
+            const rankings = teams.map(team => ({
+                team,
+                score: scores[team]
+            })).sort((a, b) => b.score - a.score);
+            
+            const leaderboardHTML = rankings.map((item, index) => {
+                const medals = ['🥇', '🥈', '🥉', '4️⃣'];
+                return `
+                    <div class="leaderboard-item">
+                        <span class="rank-badge">${medals[index]}</span>
+                        <span class="team-name">${item.team}</span>
+                        <span class="team-score">${item.score} pts</span>
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('leaderboardDisplay').innerHTML = leaderboardHTML;
+            
+            // Detailed table
+            let tableHTML = '<tr><th>Team</th>';
+            games.forEach(game => {
+                tableHTML += `<th>${game.icon}<br>${game.name}</th>`;
+            });
+            tableHTML += '<th class="team-total">TOTAL</th></tr>';
+            
+            rankings.forEach(ranking => {
+                tableHTML += `<tr><td><strong>${ranking.team}</strong></td>`;
+                games.forEach(game => {
+                    const data = gameData[game.name];
+                    let points = 0;
+                    
+                    if (data && data[ranking.team]) {
+                        // Calculate points for this game
+                        const teamResults = [];
+                        teams.forEach(team => {
+                            if (!data[team]) {
+                                teamResults.push({ team, value: null, points: 0 });
+                                return;
+                            }
+                            
+                            if (game.type === 'placement') {
+                                const placement = data[team].placement;
+                                let pts = 0;
+                                if (placement === 1) pts = 4;
+                                else if (placement === 2) pts = 3;
+                                else if (placement === 3) pts = 2;
+                                else if (placement === 4) pts = 1;
+                                teamResults.push({ team, value: placement, points: pts });
+                            } else if (game.type === 'time' || game.type === 'time_foul') {
+                                const timeStr = data[team].time;
+                                const fouls = data[team].fouls || 0;
+                                const seconds = parseTime(timeStr) + (fouls * 10);
+                                teamResults.push({ team, value: seconds });
+                            } else if (game.type === 'score') {
+                                const score = data[team].score;
+                                teamResults.push({ team, value: score });
+                            }
+                        });
+                        
+                        if (game.type === 'time' || game.type === 'time_foul') {
+                            teamResults.sort((a, b) => {
+                                if (a.value === null) return 1;
+                                if (b.value === null) return -1;
+                                return a.value - b.value;
+                            });
+                        } else if (game.type === 'score') {
+                            teamResults.sort((a, b) => {
+                                if (a.value === null) return 1;
+                                if (b.value === null) return -1;
+                                return b.value - a.value;
+                            });
+                        }
+                        
+                        if (game.type !== 'placement') {
+                            const pointsArray = [4, 3, 2, 1];
+                            teamResults.forEach((result, index) => {
+                                if (result.value !== null) {
+                                    result.points = pointsArray[index] || 0;
+                                }
+                            });
+                        }
+                        
+                        const teamResult = teamResults.find(r => r.team === ranking.team);
+                        points = teamResult ? teamResult.points : 0;
+                    }
+                    
+                    tableHTML += `<td>${points || '-'}</td>`;
+                });
+                tableHTML += `<td class="team-total">${ranking.score}</td></tr>`;
+            });
+            
+            document.getElementById('detailedTable').innerHTML = tableHTML;
+            showScreen('screen-leaderboard');
+        }
+
+        function downloadCSV() {
+            const scores = calculatePoints();
+            let csv = 'Team,';
+            games.forEach(game => csv += `${game.name},`);
+            csv += 'Total Score\n';
+            
+            teams.forEach(team => {
+                csv += `${team},`;
+                games.forEach(game => {
+                    const data = gameData[game.name];
+                    let points = 0;
+                    if (data && data[team]) {
+                        // Simplified point calculation for CSV
+                        points = '-';
+                    }
+                    csv += `${points},`;
+                });
+                csv += `${scores[team]}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'competition_results.csv';
+            a.click();
+        }
+
+        function resetAll() {
+            if (confirm('⚠️ Are you sure you want to reset ALL data? This cannot be undone!')) {
+                gameData = {};
+                saveData();
+                renderGameButtons();
+                alert('✅ All data has been reset!');
+            }
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('[id^="screen-"]').forEach(screen => {
+                screen.classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function backToGames() {
+            showScreen('screen-games');
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem('competitionData', JSON.stringify(gameData));
+            } catch (e) {
+                console.log('Storage not available');
+            }
+        }
+
+        function loadData() {
+            try {
+                const saved = localStorage.getItem('competitionData');
+                if (saved) {
+                    gameData = JSON.parse(saved);
+                    renderGameButtons();
+                }
+            } catch (e) {
+                console.log('Could not load data');
+            }
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
